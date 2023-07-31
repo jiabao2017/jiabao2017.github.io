@@ -4,12 +4,11 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="test, jiabao&#39;s Blog">
-    <meta name="description" content="这是测试用例System.out.println(&#34;hello java&#34;);
+    <meta name="keywords" content="jiabao&#39;s Blog">
+    <meta name="description" content="课程预览
 
-ReentrantLock和Synchronized的区别
-ReentrantLock是一个类。synchronized是一个Java关键字
-前者可重入 后者">
+前端通过通过点击课程的预览按钮，进入预览页面。前端传递课程id,访问内容管理服务的CoursePublishController,根据课程id，将课程的师资信息，营销信息、基本信息、课程计划信息查询并组装。
+组装后的信息通过fr">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -21,7 +20,7 @@ ReentrantLock是一个类。synchronized是一个Java关键字
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>test | jiabao&#39;s Blog</title>
+    <title>jiabao&#39;s Blog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -275,12 +274,12 @@ ReentrantLock是一个类。synchronized是一个Java关键字
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">test</h1>
+                    <h1 class="description center-align post-title"></h1>
                 </div>
             </div>
         </div>
@@ -302,13 +301,9 @@ ReentrantLock是一个类。synchronized是一个Java关键字
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/web/">
-                                <span class="chip bg-color">web</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -320,7 +315,7 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2023-07-31
+                    2023-08-01
                 </div>
                 
 
@@ -341,16 +336,48 @@ ReentrantLock是一个类。synchronized是一个Java关键字
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="这是测试用例"><a href="#这是测试用例" class="headerlink" title="这是测试用例"></a>这是测试用例</h3><pre class=" language-java"><code class="language-java">System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"hello java"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<h3 id="ReentrantLock和Synchronized的区别"><a href="#ReentrantLock和Synchronized的区别" class="headerlink" title="ReentrantLock和Synchronized的区别"></a>ReentrantLock和Synchronized的区别</h3><ul>
-<li>ReentrantLock是一个类。synchronized是一个Java关键字</li>
-<li>前者可重入 后者不可重入</li>
-<li>前者获取锁失败可以返回  后者会阻塞</li>
-<li>前者需要手动释放锁  后者自动释放锁</li>
+                <h4 id="课程预览"><a href="#课程预览" class="headerlink" title="课程预览"></a>课程预览</h4><p><img src="/%E8%AF%BE%E7%A8%8B%E5%8F%91%E5%B8%83.assets/image-20230731165620030.png" alt="image-20230731165620030"></p>
+<ol>
+<li>前端通过通过点击课程的预览按钮，进入预览页面。前端传递课程id,访问内容管理服务的CoursePublishController,根据课程id，将课程的师资信息，营销信息、基本信息、课程计划信息查询并组装。</li>
+<li>组装后的信息通过freemarker模版引擎将数据渲染到course_template.ftl上，然后返回给前端。</li>
+<li>进入预览页面，查看视频，会发送两次请求，先根据课程id到内容管理服务的CourseOpenController查询课程信息，这里调用的查询方法和第一步一样（没必要差这么全吧）。第二次将课程计划绑定的媒资id发送媒资管理服务的MediaOpenController，查询媒资的访问url，返回前端，以便播放。</li>
+</ol>
+<h4 id="课程提交审核"><a href="#课程提交审核" class="headerlink" title="课程提交审核"></a>课程提交审核</h4><ol>
+<li><p>为实现审核过程中可以修改，设计了课程预发布表，机构人员可以随意修改课程计划、课程基本信息等。提交时，将这些信息组合起来存入预发布表。审核人员审核预发布表中的内容，审核中时，要把预发布表中的审核状态设置为审核中。</p>
+</li>
+<li><p>点击提交课程，传递课程id，访问CoursePublishController的方法，将课程的各种信息组装起来存入课程预发布表。存入课程预发布表时要先判断课程信息是否完备，完备后，查询预发布表中信息，看是否存在了，若存在，要看课程的审核状态，如果是审核中，则不可再提交，否则，对存在的信息进行更新操作，不存在就直接插入。然后修改课程基本信息表中的状态为审核中</p>
+</li>
+<li><p>由于进行了预发布表的插入和课程基本信息表的修改，要加上事务控制。</p>
+<p>课程有两个状态一个审核状态{添加课程成功未提交审核   状态为“已提交”，提交审核了  “已提交”，审核通过了  “审核通过”，审核不通过 “审核不通过”}  一个发布状态{目前不清楚}        课程预发布表中有一个审核状态 {提交审核存进来的，初始都为 “已提交”，其他类似，只是没有未提交这个状态}</p>
+</li>
+</ol>
+<h4 id="课程发布"><a href="#课程发布" class="headerlink" title="课程发布"></a>课程发布</h4><h5 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h5><blockquote>
+<p>分布式系统把一个应用系统拆分成分多个可独立部署的微服务，不同微服务间通过网络远程协作（调用）完成的事务操作就是分布式事务。</p>
+<p><em><strong><u>注</u></strong></em></p>
+<p>我之前一直以为只要是连的同一个主机的mysql，@Transaction就能控制事务。只要操作了不同的数据库（这个是指mysql中创建的database，不是指mysql本身，mysql属于数据库管理系统层面）就是分布式事务。***<u>但注意</u>***，如果是两个微服务连接的同一个数据库，也属于分布式事务，原因就是跨JVM进程，两个微服务持有了不同的数据库链接进行数据库操作，此时产生分布式事务。</p>
+</blockquote>
+<h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><ul>
+<li><p>课程审核成功后，需要将预发布表中的信息复制到发布表。</p>
+</li>
+<li><p>课程发布成功后，是可以被搜索到的，并且会有大量用户搜索。因此要把发布成功的信息存到  redis、es、minio。其中redis和es都是存课程信息，minio里面存渲染后的课程静态页面。</p>
+</li>
+<li><p>保存已发布课程的信息涉及到多个操作，涉及到分布式事务，用transaction是不行的。</p>
+</li>
 </ul>
-<h4 id="如何在4小时内睡满8小时"><a href="#如何在4小时内睡满8小时" class="headerlink" title="如何在4小时内睡满8小时"></a>如何在4小时内睡满8小时</h4><blockquote>
-<p>这是一个智障问题</p>
+<h5 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h5><blockquote>
+<p>首先要考虑是AP还是CP（CAP理论），此处只说保证AP也就是最终一致性的解决方法。</p>
+</blockquote>
+<p>使用XXL-Job+数据库表方案，当把发布的课程存入发布表后，再将课程存入消息表，此处是可以使用注解保证课程发布成功，消息表一定有数据。然后开启定时任务调度，将消息表中的数据取出依次完成存入redis、es、minio等操作，就算远程调用过程中出现问题，由于是定时调度，并且消息表中的数据还在，故可以保证最终一致性。</p>
+<h5 id="消息SDK组件内容补充"><a href="#消息SDK组件内容补充" class="headerlink" title="消息SDK组件内容补充"></a>消息SDK组件内容补充</h5><blockquote>
+<p>消息组件提供一套解决对消息的增删改查业务的方案，就是向外提供接口，但是不没有具体执行逻辑</p>
+</blockquote>
+<p>消息表中主要就是保存业务的主要信息。如该项目中保存的是课程的id，通过拿到消息表中的课程id，就能查询到课程信息，然后进行缓存操作。消息表中的业务字段有多个，用不上的给该字段存null就行。消息表中还有多个状态字段。因为要存到redis、es、minio，每个阶段完成后给对应字段标记，可以减少重复执行。</p>
+<h4 id="补充关于XXL-Job使用分布式锁防止重复执行方案"><a href="#补充关于XXL-Job使用分布式锁防止重复执行方案" class="headerlink" title="补充关于XXL-Job使用分布式锁防止重复执行方案"></a>补充关于XXL-Job使用分布式锁防止重复执行方案</h4><blockquote>
+<p>xxl-job调度进行视频转码时，用了乐观锁的方案进行避免重复执行，因为视频转码比较消耗CPU，因此应该尽量避免重复执行，而对于缓存操作，不是特别消耗CPU（视频中老师说的）</p>
+</blockquote>
+<h5 id="使用xxl-job时，不是配置了调度策略嘛，为什么还要用乐观锁？"><a href="#使用xxl-job时，不是配置了调度策略嘛，为什么还要用乐观锁？" class="headerlink" title="使用xxl-job时，不是配置了调度策略嘛，为什么还要用乐观锁？"></a>使用xxl-job时，不是配置了调度策略嘛，为什么还要用乐观锁？</h5><p>老师是这样解释的，当执行器与调度器之间的连接发生了中断，xxl-job就检测不到这个执行器了，虽然是发生了中断，但是执行器可能在执行任务了（执行任务时，连接中断了）。由于xxl-job是动态扩容，因此会对其他执行器进行重新排序（代码每个执行器就是根据自己的序号进行对应任务的处理），那么就导致其他执行器会被调度执行（在断开连接的执行器执行完任务，删除任务表中数据之前）任务表中的任务，就有可能重复执行。</p>
+<h4 id="页面静态化"><a href="#页面静态化" class="headerlink" title="页面静态化"></a>页面静态化</h4><blockquote>
+<p>对于课程预览页面，用户搜索到就能查看，如果每次都访问tomcat服务器查询数据渲染返回，会使服务器压力过大，因此需要对课程预览页进行静态化并存储到minio。</p>
 </blockquote>
 
                 
@@ -378,7 +405,7 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://jiabao2017.github.io/posts/d87f7e0c/">http://jiabao2017.github.io/posts/d87f7e0c/</a>
+                    <a href="http://jiabao2017.github.io/posts/0/">http://jiabao2017.github.io/posts/0/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -415,11 +442,7 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/web/">
-                                    <span class="chip bg-color">web</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -496,9 +519,10 @@ ReentrantLock是一个类。synchronized是一个Java关键字
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/posts/0/">
                     <div class="card-image">
@@ -516,9 +540,9 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2023-08-01
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2023-08-01
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -527,6 +551,7 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -537,13 +562,13 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/4a17b156/">
+                <a href="/posts/d87f7e0c/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="test">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">test</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -563,6 +588,14 @@ ReentrantLock是一个类。synchronized是一个Java关键字
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/web/">
+                        <span class="chip bg-color">web</span>
+                    </a>
+                    
                 </div>
                 
             </div>
