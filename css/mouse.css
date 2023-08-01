@@ -1,0 +1,10 @@
+ body {
+   cursor: url(https://blog-1315098099.cos.ap-chongqing.myqcloud.com/jg.cur),
+     default;
+ }
+
+ a,
+ img {
+   cursor: url(https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/img/pointer.cur),
+     default;
+ }
