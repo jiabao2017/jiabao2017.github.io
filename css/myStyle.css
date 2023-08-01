@@ -1,10 +1,10 @@
 
 #web_bg {
-	background-image: url("../img/background.jpg"),
-		linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35))
+	background-image: url("../img/background.jpg");
+		/* linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)) */
 }
 
-/* 侧边栏个人信息卡片动态渐变色 */
+/* 侧边栏个人信息卡片动态渐变色
 #aside-content>.card-widget {
 	background: linear-gradient(-45deg,
 			#e8d8b9,
@@ -60,7 +60,7 @@
 	100% {
 		background-position: 0% 50%;
 	}
-}
+} */
 
 /* 个人信息Follow me按钮 */
 #aside-content>.card-widget.card-info>#card-info-btn {
@@ -81,14 +81,42 @@
 
 /*分类页面*/
 .layout>#page {
-
-	background: rgba(255, 255, 255, .6);
+  background: url("../img/background.jpg");
 }
 
 /*时间轴页面*/
 .layout>#archive {
 	background: rgba(255, 255, 255, .6);
 }
+
+
+/* 导航栏居中
+#nav-right {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  margin-left: auto;
+  display: flex;
+  flex-wrap: nowrap;
+} */
+
+.nav-fixed #nav {
+  transform: translateY(58px) !important;
+  -webkit-transform: translateY(58px) !important;
+  -moz-transform: translateY(58px) !important;
+  -ms-transform: translateY(58px) !important;
+  -o-transform: translateY(58px) !important;
+}
+
+#nav {
+  transition: none !important;
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+}
+
+
+
 
 
 
