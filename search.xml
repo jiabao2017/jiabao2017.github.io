@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>对接微信扫码登录</title>
+      <link href="/posts/65513/"/>
+      <url>/posts/65513/</url>
+      
+        <content type="html"><![CDATA[<h2 id="在Vue页面中显示微信微信登录二维码"><a href="#在Vue页面中显示微信微信登录二维码" class="headerlink" title="在Vue页面中显示微信微信登录二维码"></a>在Vue页面中显示微信微信登录二维码</h2><ol><li><p>在vue项目中的index.html中引入微信登录js文件    （在index.html中的具体位置，测试时是放在html标签中）</p><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure></li><li><p>在需要显示微信登录二维码的vue页面中的methods中创建添加一个函数，并且在mounted中调用该函数，并且还得在template标签中创建一个div，来放置显示的二维码图片（vue的基础语法）</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">login() &#123;</span><br><span class="line">  var obj = new WxLogin(&#123;</span><br><span class="line">    self_redirect: false,</span><br><span class="line">    id: &quot;login_container&quot;,</span><br><span class="line">    appid: &quot;appid&quot;,              //填入你自己的appid</span><br><span class="line">    scope: &quot;snsapi_login&quot;,</span><br><span class="line">    redirect_uri: &quot;uri&quot;,         //填入微信平台申请时的回调地址</span><br><span class="line">    state: &#x27;A123DC35165464&#x27;,</span><br><span class="line">    style: &quot;black&quot;,</span><br><span class="line">    href: &quot;&quot;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;login_container&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></li></ol><h2 id="实现扫码登录"><a href="#实现扫码登录" class="headerlink" title="实现扫码登录"></a>实现扫码登录</h2><blockquote><p>实现在页面显示微信登录二维码后再开始此部分，下面以我自己的情况进行说明</p></blockquote><ol><li><p>配置nginx  </p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">redirect_uri: <span class="string">&quot;http://localhost:8160/api/wxLogin&quot;</span>,</span><br></pre></td></tr></table></figure><p>我自己填写的回调地址如上图所示，那么我就该编写/api/wxLogin的访问接口，处理微信请求。redirect_uri就是接收微信下发的code和state，而这里的redirect_uri又得是微信开放平台提交审核时填写的redirect_uri，如果和你的后端服务的ip和端口不一致的话，可以使用nginx进行代理。我自己的后端服务是在本地运行测试，但端口号不是8160，所以对nginx进行配置，添加监听端口8160</p><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">http&#123;</span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    <span class="section">upstream</span> test&#123;</span><br><span class="line">       <span class="attribute">server</span> <span class="number">127.0.0.1:9090</span> weight=<span class="number">10</span>;    <span class="comment">#我的后端端口是9090   weight是负载权重 不用管</span></span><br><span class="line">    &#125; </span><br><span class="line">  </span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line"><span class="attribute">listen</span> <span class="number">8160</span>;               <span class="comment">#监听8160端口</span></span><br><span class="line"><span class="attribute">server_name</span> localhost;</span><br><span class="line">        <span class="section">location</span> /api &#123;       <span class="comment">#访问路径为api开头   ip:port/xxx   api开头是指xxx的位置是api</span></span><br><span class="line">            <span class="attribute">proxy_pass</span> http://test;   <span class="comment">#代理到目标地址  test是上面那个</span></span><br><span class="line">        &#125; </span><br><span class="line">        <span class="comment">#http://localhost:8160/api/wxLogin经过代理后变成http://localhost:9090/api/wxLogin</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>编写Controller</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WxLoginController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/api/wxLogin&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">wxLogin</span><span class="params">(String code, String state)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;微信扫码回调,code:&#123;&#125;,state:&#123;&#125;&quot;</span>, code, state);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:http://localhost:8080/userRegister&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>编写一个最简单的进行测试即可。这个接口的参数必须是和我代码中的一样，可以参考微信开放平台的说明。返回的是一个字符串，但其实是让前端进行重定向，也就是用户扫码授权后，后端完成一系列操作，如获取用户信息，添加数据库。操作完成后，让页面进行跳转，如进入系统主页等。注意别用@RestController，不然返回就真是一个普通字符串了。</p></li><li><p>关于获取access_token，以及根据access_token获取用户信息的操作，查看微信开发平台的说明即可，后端代码的实现主要是使用RestTamplate对微信开发平台上给出的url进行访问，获取返回值 ，提取用户信息即可</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 实用开发 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 实用开发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>二叉树笔记</title>
       <link href="/posts/5455/"/>
       <url>/posts/5455/</url>
